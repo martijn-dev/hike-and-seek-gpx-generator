@@ -48,11 +48,13 @@ let finalGPXString = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 
 data.forEach((spot) => {
   if (!spot.coord) return;
+  spot.coord = spot.coord.replaceAll('-', '');
+  spot.coord = spot.coord.replaceAll(' ', '');
   let coordX = spot.coord.substring(0, spot.coord.length * 0.5);
   let coordY = spot.coord.substring(spot.coord.length * 0.5);
   coordX = `${settings['insert-pre-coord-number-x'] ?? ''}${coordX}${settings['insert-after-coord-number-x'] ?? ''}`;
   coordY = `${settings['insert-pre-coord-number-y'] ?? ''}${coordY}${settings['insert-after-coord-number-y'] ?? ''}`;
-
+  console.log(`Insert (${coordX}, ${coordY}) for spot ${spot.post}`);
   const wgsCoord = rdToWgs84(coordX, coordY) as Wgs84Coord;
   if (wgsCoord.error) {
     console.error(
@@ -82,8 +84,3 @@ fs.writeFile(`${new Date().getFullYear()}.gpx`, finalGPXString, function (err) {
   if (err) return console.error('Error writing gpx data to file', err);
   console.log(`${new Date().getFullYear()}.gpx created!`);
 });
-
-console.log(settings);
-console.log(types);
-console.log(data[0]);
-console.log(finalGPXString);
