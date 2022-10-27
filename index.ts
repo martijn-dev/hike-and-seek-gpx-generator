@@ -48,10 +48,10 @@ let finalGPXString = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 
 data.forEach((spot) => {
   if (!spot.coord) return;
-  spot.coord = spot.coord.replaceAll('-', '');
-  spot.coord = spot.coord.replaceAll(' ', '');
-  let coordX = spot.coord.substring(0, spot.coord.length * 0.5);
-  let coordY = spot.coord.substring(spot.coord.length * 0.5);
+  spot.coord = spot.coord.toString().replaceAll('-', '');
+  spot.coord = spot.coord.toString().replaceAll(' ', '');
+  let coordX = spot.coord.toString().substring(0, spot.coord.length * 0.5);
+  let coordY = spot.coord.toString().substring(spot.coord.length * 0.5);
   coordX = `${settings['insert-pre-coord-number-x'] ?? ''}${coordX}${settings['insert-after-coord-number-x'] ?? ''}`;
   coordY = `${settings['insert-pre-coord-number-y'] ?? ''}${coordY}${settings['insert-after-coord-number-y'] ?? ''}`;
   console.log(`Insert (${coordX}, ${coordY}) for spot ${spot.post}`);
