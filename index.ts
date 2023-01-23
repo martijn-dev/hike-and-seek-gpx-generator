@@ -14,6 +14,8 @@ type Settings = {
 type Type = {
   type: string;
   icon: string;
+  color: string;
+  osmand_icon: string;
 };
 
 type Data = {
@@ -39,7 +41,9 @@ const types = XLSX.utils.sheet_to_json<Type>(workbook.Sheets['Types']);
 const data = XLSX.utils.sheet_to_json<Data>(workbook.Sheets['Data']);
 
 let finalGPXString = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<gpx version="1.0" creator="${pjson.author}" xmlns="http://www.topografix.com/GPX/1/0">
+<gpx version="1.1" creator="${
+  pjson.author
+}" xmlns="http://www.topografix.com/GPX/1/1"  xmlns:osmand="https://osmand.net">
 <metadata>
 <name>Hike and Seek ${new Date().getFullYear()}</name>
 <desc />
@@ -63,12 +67,18 @@ data.forEach((spot) => {
     );
     return;
   }
+  const type = types.find((type) => type.type === spot.type);
   const wptString = `<wpt lat="${wgsCoord.lat}" lon="${wgsCoord.lon}">
   <ele>0.0</ele>
   <time>${new Date().toISOString()}</time>
   <name>${spot.post}</name>
   <desc>${spot.description}</desc>
-  <sym>${types.find((type) => type.type === spot.type)?.icon ?? 'Flag, Blue'}</sym>
+  <sym>${type?.icon ?? 'Flag, Blue'}</sym>
+  <extensions>
+  <osmand:color>${type?.color ?? '#ff0000'}</osmand:color>
+  <osmand:icon>${type?.osmand_icon ?? 'special_flag_stroke'}</osmand:icon>
+  <osmand:background>circle</osmand:background>
+  </extensions>
   </wpt>`;
 
   finalGPXString += wptString;
